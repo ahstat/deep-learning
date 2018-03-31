@@ -198,8 +198,8 @@ load_model('models/4_A_y1_from_x1.h5')
 ##
 # Visual checking for a time series
 ##
-i = 0 # time series selected (between 0 and N-1)
-idx = range(i, i+1)
+n = 0 # time series selected (between 0 and N-1)
+idx = range(n, n+1)
 x = inputs_test[idx].flatten()
 y_hat = model.predict(inputs_test[idx]).flatten()
 y = outputs_test[idx].flatten()
@@ -260,8 +260,8 @@ load_model('models/4_A_y123_from_x1234.h5')
 ##
 # Visual checking for a time series
 ##
-i = 0 # time series selected (between 0 and N-1)
-idx = range(i, i+1)
+n = 0 # time series selected (between 0 and N-1)
+idx = range(n, n+1)
 x = inputs_test[idx].flatten()
 y_hat = model.predict(inputs_test[idx]).flatten()
 y = outputs_test[idx].flatten()
@@ -337,8 +337,8 @@ load_model('models/4_B_y1_from_x1.h5')
 ##
 # Visual checking for a time series
 ##
-i = 0 # time series selected (between 0 and N-1)
-idx = range(i, i+1)
+n = 0 # time series selected (between 0 and N-1)
+idx = range(n, n+1)
 x = inputs_test[idx].flatten()
 y_hat = model.predict(inputs_test[idx]).flatten()
 y = outputs_test[idx].flatten()
@@ -680,9 +680,9 @@ model_stateless.compile(loss = 'mse', optimizer = 'rmsprop')
 model_stateless.set_weights(model.get_weights())
 
 ## Prediction of a new set
-i = 0 # time series selected (between 0 and N-1)
-x = x_train[i]
-y = y_train[i]
+n = 0 # time series selected (between 0 and N-1)
+x = x_train[n]
+y = y_train[n]
 y_hat = model_stateless.predict(np.array([x]))[0]
 plt.plot(range(T), y)
 plt.plot(range(T), y_hat)
@@ -800,12 +800,13 @@ model_stateless.compile(loss = 'mse', optimizer = 'rmsprop')
 model_stateless.set_weights(model.get_weights())
 
 ## Prediction of a new set
-i = 1 # time series selected (between 0 and N-1)
-x = x_train[i]
-y = y_train[i]
+n = 1 # time series selected (between 0 and N-1)
+x = x_train[n]
+y = y_train[n]
 y_hat = model_stateless.predict(np.array([x]))[0]
 
 dim = 2 # dim=0 for y1 ; dim=1 for y2 ; dim=2 for y3.
 plt.plot(range(T)[0:100], y[:,dim][0:100])
 plt.plot(range(T)[0:100], y_hat[:,dim][0:100])
 ## Conclusion: works well again to learn this time series
+
