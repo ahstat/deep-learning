@@ -440,7 +440,7 @@ def stateful_cut(arr, batch_size, T_after_cut):
         print("ERROR: T_after_cut must divide T")
     
     # We need batch_size * nb_reset = N
-    # If nb_reset = 1, we only reset after the whole epoch, so no need to reset
+    # If nb_reset = 1, we only reset after the whole epoch
     nb_reset = int(N / batch_size)
     if nb_reset * batch_size != N:
         print("ERROR: batch_size must divide N")
@@ -531,7 +531,6 @@ stateful_cut(arr, batch_size, T_after_cut).reshape(-1, T_after_cut)
 ##############################################################
 # Function to define 'Callback resetting model states' class #
 ##############################################################
-# Need to reset states only when nb_reset > 1
 # This callback will slow down computations.
 def define_reset_states_class(nb_cuts):
     class ResetStatesCallback(Callback):
@@ -544,6 +543,10 @@ def define_reset_states_class(nb_cuts):
             if self.counter % nb_cuts == 0:
                 self.model.reset_states()
             self.counter += 1
+            
+        def on_epoch_end(self, epoch, logs={}):
+            # reset states after each epoch
+            self.model.reset_states()
     return(ResetStatesCallback)
 
 #################################################################
@@ -579,7 +582,7 @@ def define_stateful_val_loss_class(inputs, outputs, batch_size, nb_cuts):
         def __init__(self):
             self.val_loss = []
     
-        def on_epoch_end(self, batch, logs={}):
+        def on_epoch_end(self, epoch, logs={}):
             mean_pred = test_on_batch_stateful(self.model, inputs, outputs, 
                                                batch_size, nb_cuts)
             print('val_loss: {:0.3e}'.format(mean_pred), end = '')
@@ -652,7 +655,10 @@ if nb_reset > 1:
                         callbacks = [ResetStatesCallback(), validation])
     history.history['val_loss'] = ValidationCallback.get_val_loss(validation)
 else:
-    # If nb_reset = 1, we do not need to reinitialize states
+    # If nb_reset = 1, we should reset states after each epoch.
+    # To improve computational speed, we can decide not to reinitialize states
+    # at all. Results are similar in this case.
+    # In the following line, states are not reinitialized at all:
     history = model.fit(inputs, outputs, epochs = epochs, 
                         batch_size = batch_size, shuffle=False,
                         validation_data=(inputs_test, outputs_test))
@@ -773,7 +779,10 @@ if nb_reset > 1:
                         callbacks = [ResetStatesCallback(), validation])
     history.history['val_loss'] = ValidationCallback.get_val_loss(validation)
 else:
-    # When nb_reset = 1, we do not need to reinitialize state
+    # If nb_reset = 1, we should reset states after each epoch.
+    # To improve computational speed, we can decide not to reinitialize states
+    # at all. Results are similar in this case.
+    # In the following line, states are not reinitialized at all:
     history = model.fit(inputs, outputs, epochs = epochs, 
                         batch_size = batch_size, shuffle=False,
                         validation_data=(inputs_test, outputs_test))
