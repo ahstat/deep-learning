@@ -31,7 +31,7 @@ from keras.layers import LSTM, TimeDistributed
 from keras.callbacks import Callback
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-os.chdir('G:/4_rnn')
+os.chdir(os.getenv('HOME') + '/Documents/GitHub/deep-learning/rnn/')
 
 ## Checking and creating directory
 def create(directory):
